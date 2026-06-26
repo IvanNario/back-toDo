@@ -7,9 +7,12 @@ import authRoutes from "./routes/auth.routes.js";
 import taskRoutes from "./routes/task.routes.js";
 
 const app = express();
-const allowedOrigins = process.env.CORS_ORIGIN
-  ? process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim())
-  : true;
+const configuredOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim()).filter(Boolean)
+  : [];
+const allowedOrigins = configuredOrigins.length === 0 || configuredOrigins.includes("*")
+  ? true
+  : configuredOrigins;
 
 app.disable("x-powered-by");
 app.use(cors({ origin: allowedOrigins }));
@@ -36,4 +39,3 @@ app.use((error, req, res, next) => {
 });
 
 export default app;
-
